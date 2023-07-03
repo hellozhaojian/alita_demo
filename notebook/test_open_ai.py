@@ -6,7 +6,7 @@ proxies = {
     "http": "http://127.0.0.1:1087",
     "https": "http://127.0.0.1:1087",
 }
-openai.proxy = proxies
+#openai.proxy = proxies
 openai.api_key = "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"
 #openai.api_key = "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"
 #openai.api_key = "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"
