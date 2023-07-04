@@ -11,6 +11,7 @@ openai.api_key = "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"
 #openai.api_key = "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"
 #openai.api_key = "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"
 openai.api_key = "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"
+openai.api_key = "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"
 model = "gpt-3.5-turbo"
 #model = "gpt-3.5-turbo-0613"
 
