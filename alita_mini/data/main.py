@@ -7,7 +7,7 @@ import json
 import os
 import time
 import pdfplumber
-
+import sys
 if "all_proxy" in os.environ:
     print("pop all proxy")
     os.environ.pop("all_proxy")
@@ -123,9 +123,9 @@ def get_lines_from_page(page, head, foot):
     # print(lines)
 
     # lines = lines[1:-1]
-    if type(lines[0]) == str and is_header(lines[0], head):
+    if len(lines) > 0 and  type(lines[0]) == str and is_header(lines[0], head):
         lines = lines[1:]
-    if type(lines[-1]) == str and is_foot(lines[-1], foot):
+    if len(lines) > 0 and type(lines[-1]) == str and is_foot(lines[-1], foot):
         lines = lines[:-1]
     # return lines
     for index, item in enumerate(lines):
@@ -162,7 +162,7 @@ def begin_mda(lines):
         if type(item) != str:
             continue
         if (
-            item.find("管理层讨论与分析") != -1
+            ( item.find("管理层讨论与分析") != -1 or item.find("董事会报告") != -1)
             and item.find("第三节") != -1
             and item.find("...............") == -1
             and item.find("请") == -1
@@ -235,6 +235,7 @@ def download_and_process_file(url, local_path="/tmp/a.PDF", try_count=3):
     response = None
     while True:
         # 下载文件
+        print(f"in request {url}")
         response = requests.get(url, proxies={})
         if response.status_code == 200:
             break
@@ -265,8 +266,8 @@ def download_and_process_file(url, local_path="/tmp/a.PDF", try_count=3):
     return content
 
 
-def process_item(args):
-    item, lock = args
+def process_item(item, file):
+    #item, file = args
     info = json.loads(item.strip())
     """
     "secCode": "001211", "secName": "双枪科技, adjunctUrl
@@ -283,7 +284,10 @@ def process_item(args):
     relative_url = info["adjunctUrl"]
     pub_time = relative_url.split("/")[-2]
     url = urljoin(base_url, relative_url)
+    print(f"begin download {stock_name} {url}")
     content = download_and_process_file(url, "/tmp/a.PDF")
+    
+    print("done download {stock_name}")
     if content is None or content == "":
         pass
     else:
@@ -298,19 +302,33 @@ def process_item(args):
         "content": content,
         "url": url,
     }
-    with lock:
-        with open("output.txt", "a") as file:
+    #if lock:
+    #    with lock:
+    #        with open("output.txt", "a") as file:
             # file.write(str(result) + "\n")
-            file.write(json.dumps(result, ensure_ascii=False) + "\n")
+    #            file.write(json.dumps(result, ensure_ascii=False) + "\n")
+
+    #with open("output.txt", "a") as file:
+        # file.write(str(result) + "\n")
+    file.write(json.dumps(result, ensure_ascii=False) + "\n")
+
+def get_processed_codes(filename='output.txt'):
+    lines = open(filename, "r").readlines()
+    set_code = set()
+    for line in lines:
+        line = json.loads(line.strip())
+        code = line['stock_code']
+        set_code.add(code)
+    return set_code
 
 if __name__ == "__main__": 
-    meta_file = "../../notebook/report_meta_info.txt"
+    meta_file = "report_meta_info.txt"
     lines = open(meta_file).readlines()
-
+    set_codes = get_processed_codes()
     # 定义要处理的数组
     data_list = lines  # 请替换为实际的数组元素
     new_data_list = []
-    stock_code_set = set()
+    stock_code_set = set_codes
     for item in data_list:
         info = json.loads(item.strip())
         """
@@ -322,13 +340,20 @@ if __name__ == "__main__":
         stock_code = info["secCode"]
         if stock_code in stock_code_set:
             continue
+        if stock_code in [ '300033']:
+            print("Not Done")
         stock_code_set.add(stock_code)
         new_data_list.append(item)
 
+    file = open("output.txt.new", "a")
 
     print(len(new_data_list), " ----- ")
+    for item in new_data_list:
+        process_item(item, file)
+
+    sys.exit(0)
     # 定义要开启的进程数量
-    n = 6  # 请替换为实际需要的进程数量
+    n = 1  # 请替换为实际需要的进程数量
 
     # 创建进程池
     pool = multiprocessing.Pool(processes=n)
@@ -339,7 +364,7 @@ if __name__ == "__main__":
         # processed_set = manager.set()
 
         # 使用进程池并行处理数组中的每个元素
-        pool.map(process_item, [(item, lock) for item in new_data_list[:100]])
+        pool.map(process_item, [(item, lock) for item in new_data_list])
 
     # 关闭进程池
     pool.close()
