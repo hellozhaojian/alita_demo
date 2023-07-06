@@ -1,0 +1,3 @@
+# task,  template_file, source_type
+管理层行业分析 kg_industry_ana.txt year_report
+管理层企业竞争力分析 kg_company_core.txt year_report
