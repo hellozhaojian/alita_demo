@@ -8,6 +8,7 @@ import os
 import time
 import pdfplumber
 import sys
+
 if "all_proxy" in os.environ:
     print("pop all proxy")
     os.environ.pop("all_proxy")
@@ -18,6 +19,7 @@ import json
 from pdfplumber.pdf import PDF
 import re
 from collections import Counter
+
 base_url = "http://static.cninfo.com.cn/"
 
 
@@ -123,7 +125,7 @@ def get_lines_from_page(page, head, foot):
     # print(lines)
 
     # lines = lines[1:-1]
-    if len(lines) > 0 and  type(lines[0]) == str and is_header(lines[0], head):
+    if len(lines) > 0 and type(lines[0]) == str and is_header(lines[0], head):
         lines = lines[1:]
     if len(lines) > 0 and type(lines[-1]) == str and is_foot(lines[-1], foot):
         lines = lines[:-1]
@@ -162,7 +164,7 @@ def begin_mda(lines):
         if type(item) != str:
             continue
         if (
-            ( item.find("管理层讨论与分析") != -1 or item.find("董事会报告") != -1)
+            (item.find("管理层讨论与分析") != -1 or item.find("董事会报告") != -1)
             and item.find("第三节") != -1
             and item.find("...............") == -1
             and item.find("请") == -1
@@ -267,7 +269,7 @@ def download_and_process_file(url, local_path="/tmp/a.PDF", try_count=3):
 
 
 def process_item(item, file):
-    #item, file = args
+    # item, file = args
     info = json.loads(item.strip())
     """
     "secCode": "001211", "secName": "双枪科技, adjunctUrl
@@ -286,7 +288,7 @@ def process_item(item, file):
     url = urljoin(base_url, relative_url)
     print(f"begin download {stock_name} {url}")
     content = download_and_process_file(url, "/tmp/a.PDF")
-    
+
     print("done download {stock_name}")
     if content is None or content == "":
         pass
@@ -302,26 +304,28 @@ def process_item(item, file):
         "content": content,
         "url": url,
     }
-    #if lock:
+    # if lock:
     #    with lock:
     #        with open("output.txt", "a") as file:
-            # file.write(str(result) + "\n")
+    # file.write(str(result) + "\n")
     #            file.write(json.dumps(result, ensure_ascii=False) + "\n")
 
-    #with open("output.txt", "a") as file:
-        # file.write(str(result) + "\n")
+    # with open("output.txt", "a") as file:
+    # file.write(str(result) + "\n")
     file.write(json.dumps(result, ensure_ascii=False) + "\n")
 
-def get_processed_codes(filename='output.txt'):
+
+def get_processed_codes(filename="output.txt"):
     lines = open(filename, "r").readlines()
     set_code = set()
     for line in lines:
         line = json.loads(line.strip())
-        code = line['stock_code']
+        code = line["stock_code"]
         set_code.add(code)
     return set_code
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     meta_file = "report_meta_info.txt"
     lines = open(meta_file).readlines()
     set_codes = get_processed_codes()
@@ -340,7 +344,7 @@ if __name__ == "__main__":
         stock_code = info["secCode"]
         if stock_code in stock_code_set:
             continue
-        if stock_code in [ '300033']:
+        if stock_code in ["300033"]:
             print("Not Done")
         stock_code_set.add(stock_code)
         new_data_list.append(item)

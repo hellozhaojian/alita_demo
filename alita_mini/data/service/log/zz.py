@@ -130,7 +130,6 @@ def _stats(trace_id="", module_name="", **kwargs):
 def _monitor(trace_id="", module_name=""):
     return Monitor(trace_id, module_name)
 
-
 if __name__ == "__main__":
-    config_log("hi", "hi", "log", print_termninal=True)
+    config_log('hi', 'hi', '.log', print_termninal=True)
     logging.info("hi")

@@ -1,0 +1,12 @@
+config_tag: default
+mongo_config:
+  host: 127.0.0.1
+  password: OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh
+  user: root
+  port: 27007
+
+ssl_config:
+  chinese_key: /home/test/.ssl/memorylib.cloud/memorylib.cloud.key
+  chinese_csr: /home/test/.ssl/memorylib.cloud/memorylib.cloud.pem
+  us_key: /home/test/https_keys/chat.memorylib.me/privkey.pem
+  us_csr: /home/test/https_keys/chat.memorylib.me/fullchain.pem
