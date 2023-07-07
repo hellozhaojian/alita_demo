@@ -1,5 +1,6 @@
 from __future__ import annotations
 import logging
+import json
 from bson import ObjectId
 from pydantic import BaseModel, Field, validator
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -186,6 +187,25 @@ class Document(BaseModel):
 
     async def build_db(client: AsyncIOMotorClient):
         await Document.build_index(client=client)
+
+    @classmethod
+    async def export_collection_to_jsonl(cls, client: AsyncIOMotorClient, output_file):
+        db = client[Databases.DB.value]
+        collection = db[Tables.DOCUMENTS_TABLE.value]
+        # 指定要导出的字段
+        fields = ["_id", "title", "content", "security_code", "security_name"]
+
+        writer = open(output_file, "w")
+        # 查询并逐行写入文档数据
+        async for document in collection.find({}, {field: 1 for field in fields}):
+            data = {
+                "_id": str(document["_id"]),
+                "title": "{}({}):{}".format(document["security_name"], document["security_code"], document["title"]),
+                "content": document["content"],
+            }
+            writer.write(json.dumps(data, ensure_ascii=False) + "\n")
+        writer.close()
+        return True
 
 
 if __name__ == "__main__":

@@ -76,9 +76,12 @@ class DocumentsOfflineService(object):
 
     def dump_data_for_index(self):
         logging.info("begin .... dump {} into {} ".format(self.config.mongo_uri, self.config.dump_file))
-
-        pass
-        logging.info("Done .... dump {} into {} ".format(self.config.mongo_uri, self.config.dump_file))
+        loop = self.client.get_io_loop()
+        loop.run_until_complete(Document.build_db(self.client))
+        dump_ok = loop.run_until_complete(Document.export_collection_to_jsonl(self.client, self.config.dump_file))
+        logging.info(
+            "Done .... dump {} into {}  status {}".format(self.config.mongo_uri, self.config.dump_file, dump_ok)
+        )
 
 
 if __name__ == "__main__":
