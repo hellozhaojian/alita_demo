@@ -34,7 +34,7 @@ class SingletonType(type):
                     cls._instance = super().__call__(*args, **kwargs)
         else:
             logging.debug(f"use old instance {cls}")
-            print(f"use old instance {cls}")
+            # print(f"use old instance {cls}")
         return cls._instance
 
 

@@ -122,6 +122,47 @@ def add_cost_time(func):
     return wrapper
 
 
+# TODO 根据open的设置来定义调用的频率
+def rate_limited(max_calls=3, period=60):
+    """
+    装饰器函数，用于控制函数的调用频率。
+    :param max_calls: 允许的最大调用次数，默认为3次。
+    :param period: 时间周期（秒），默认为60秒。
+    """
+    calls = []
+
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            now = time.time()
+            # print(f"now: {now} previous is {calls}")
+            calls_in_period = [call for call in calls if now - call < period]
+            # print(f"..... collection: {calls_in_period}")
+            if len(calls_in_period) >= max_calls:
+                # 达到调用频率限制，暂时休眠 0.5 is trick, 屏蔽误差
+                time_to_wait = period + 0.5 - (now - calls_in_period[0])
+                logging.info(f"调用频率过高，休眠 {time_to_wait:.2f} 秒后重试... {now} --- {calls_in_period}")
+                # print(f"调用频率过高，休眠 {time_to_wait:.2f} 秒后重试...")
+                # print(f"调用频率过高，休眠 {time_to_wait:.2f} 秒后重试... {now} --- {calls_in_period}, len calls {len(calls)}")
+
+                time.sleep(time_to_wait)
+            now = time.time()
+            result = func(*args, **kwargs)
+            calls.append(now)
+            # 清理超过时间周期的调用记录
+            # calls[:] = [call for call in calls if now - call < period]
+            calls[:] = calls[-3 * max_calls :]
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+@rate_limited(max_calls=3, period=60)
+def rate_limit_func():
+    print("hello ...")
+
+
 if __name__ == "__main__":
     touch_dir(Path("main.py").parent)
     yml_path = "/tmp/order.dump.yml"
@@ -167,4 +208,8 @@ if __name__ == "__main__":
 
     result = asyncio.run(add(1, 2))
 
-    print(result)
+    now = time.time()
+    for i in range(10):
+        rate_limit_func()
+    print(f"time last {time.time()-now}, count : {i}")
+    # print(result)

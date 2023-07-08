@@ -1,0 +1,17 @@
+input_data_config:
+  security_code_list: [300308]
+task_config:
+  prompts_path_list:
+    [
+      summary/report_manager_ana/company_core/v1,
+      summary/report_manager_ana/industry/v1,
+      summary/report_manager_ana/key_danger/v1,
+      summary/report_manager_ana/operation/v1,
+      summary/report_manager_ana/danger/v1,
+    ]
+mongo_config:
+  host: 127.0.0.1
+  password: OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh
+  user: root
+  port: 27007
+open_ai_key: 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

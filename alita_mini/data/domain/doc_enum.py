@@ -27,6 +27,7 @@ class Databases(Enum):
 
 class Tables(Enum):
     DOCUMENTS_TABLE = "docs"
+    TASK_RESULTS_TABLE = "task_results"
 
 
 DOC_TYPES = [
