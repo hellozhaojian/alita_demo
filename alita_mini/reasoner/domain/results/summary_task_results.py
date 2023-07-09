@@ -10,7 +10,7 @@ from alita_mini.reasoner.domain.task_result_base import BaseTaskResult
 from alita_mini.data.domain.doc_enum import DOC_TYPES, MarketType, DocMainType, DocSubType, Databases, Tables
 from alita_mini.custom_types import PyObjectId
 from alita_mini.reasoner.domain.prompts_enum import TaskType
-from typing import List
+from typing import List, Union
 
 
 class SummrayTaskResults(BaseTaskResult):
@@ -20,8 +20,8 @@ class SummrayTaskResults(BaseTaskResult):
     task_name: str
     summary: str
     detail_list: List[str]
-    doc_sub_type: DocSubType = Field(..., description="Field with values from MyEnum")
-    market_name: MarketType = Field(..., description="Field with values from MyEnum")
+    doc_sub_type: str  # DocSubType = Field(..., description="Field with values from MyEnum")
+    market_name: str  # MarketType = Field(..., description="Field with values from MyEnum")
     security_code: str
     security_name: str
     report_year: str
@@ -50,7 +50,7 @@ class SummrayTaskResults(BaseTaskResult):
     @classmethod
     async def build_index(cls, client: AsyncIOMotorClient):
         db = client[Databases.DB.value]
-        collection = db[Tables.TASK_RESULTS_TABLE.value]
+        collection = db[Tables.SUMMARY_RESULTS_TALBE.value]
         if await SummrayTaskResults.find_one(client) is None:
             index_name = await collection.create_index(
                 [
@@ -83,7 +83,7 @@ class SummrayTaskResults(BaseTaskResult):
         market_name=MarketType.A_STOCK_MARKET.value,
     ):
         db = client[Databases.DB.value]
-        collection = db[Tables.TASK_RESULTS_TABLE.value]
+        collection = db[Tables.SUMMARY_RESULTS_TALBE.value]
         doc_item_json = {
             "doc_id": doc_id,
             "summary": summary,
@@ -116,6 +116,7 @@ class SummrayTaskResults(BaseTaskResult):
         doc_sub_type=None,
         market_name=None,
         task_type=None,
+        task_name=None,
     ):
         query = {}
         if report_year is not None and report_year != "":
@@ -130,6 +131,8 @@ class SummrayTaskResults(BaseTaskResult):
             query["doc_sub_type"] = doc_sub_type
         if market_name is not None and market_name != "":
             query["market_name"] = market_name
+        if task_name is not None and task_name != "":
+            query["task_name"] = task_name
         return query
 
     @classmethod
@@ -138,7 +141,7 @@ class SummrayTaskResults(BaseTaskResult):
         limit_count = page_size
 
         db = client[Databases.DB.value]
-        collection = db[Tables.TASK_RESULTS_TABLE.value]
+        collection = db[Tables.SUMMARY_RESULTS_TALBE.value]
 
         # query = {"doc_type": doc_type, "report_year": report_year}
 
@@ -167,54 +170,56 @@ class SummrayTaskResults(BaseTaskResult):
     @classmethod
     async def find_one(cls, client: AsyncIOMotorClient):
         db = client[Databases.DB.value]
-        collection = db[Tables.TASK_RESULTS_TABLE.value]
+        collection = db[Tables.SUMMARY_RESULTS_TALBE.value]
 
         doc_item = await collection.find_one()
         if doc_item is None:
             return None
+        # print(doc_item)
         return SummrayTaskResults(**doc_item)
 
-    async def build_db(client: AsyncIOMotorClient):
+    @classmethod
+    async def build_db(cls, client: AsyncIOMotorClient):
         await SummrayTaskResults.build_index(client=client)
 
 
-if __name__ == "__main__":
-    print("Hello world")
-    MONGODB_ADMINUSERNAME = "root"
-    MONGODB_ADMINPASSWORD = "OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh"
-    mongo_uri = f"mongodb://{MONGODB_ADMINUSERNAME}:{MONGODB_ADMINPASSWORD}@127.0.0.1:27007"
-    import motor.motor_asyncio
+# if __name__ == "__main__":
+#     print("Hello world")
+#     MONGODB_ADMINUSERNAME = "root"
+#     MONGODB_ADMINPASSWORD = "OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh"
+#     mongo_uri = f"mongodb://{MONGODB_ADMINUSERNAME}:{MONGODB_ADMINPASSWORD}@127.0.0.1:27007"
+#     import motor.motor_asyncio
 
-    client = motor.motor_asyncio.AsyncIOMotorClient(mongo_uri)
+#     client = motor.motor_asyncio.AsyncIOMotorClient(mongo_uri)
 
-    # import asyncio
-    loop = client.get_io_loop()
-    loop.run_until_complete(SummrayTaskResults.build_db(client))
-    # loop.run_until_complete(do_insert())
-    doc_id = "111111"
-    task_name = "管理层关于竞争力的分析总结"
-    summary = "xxxxxxx, 垄断"
-    detail_list = ["xxxxx", "xxxx"]
-    security_code = "300033"
-    security_name = "同花顺"
-    report_year = "2020"
+#     # import asyncio
+#     loop = client.get_io_loop()
+#     loop.run_until_complete(SummrayTaskResults.build_db(client))
+#     # loop.run_until_complete(do_insert())
+#     doc_id = "111111"
+#     task_name = "管理层关于竞争力的分析总结"
+#     summary = "xxxxxxx, 垄断"
+#     detail_list = ["xxxxx", "xxxx"]
+#     security_code = "300033"
+#     security_name = "同花顺"
+#     report_year = "2020"
 
-    insert_ok = loop.run_until_complete(
-        SummrayTaskResults.insert(
-            client,
-            doc_id=doc_id,
-            task_name=task_name,
-            security_code=security_code,
-            security_name=security_name,
-            summary=summary,
-            detail_list=detail_list,
-            report_year=report_year,
-        )
-    )
-    print(insert_ok)
-    query = SummrayTaskResults.build_query(security_code=security_code)
-    count, documents = loop.run_until_complete(SummrayTaskResults.list_docs(client, query))
-    print(count)
-    for document in documents:
-        id_str = str(document["_id"])
-        print(document)
+#     insert_ok = loop.run_until_complete(
+#         SummrayTaskResults.insert(
+#             client,
+#             doc_id=doc_id,
+#             task_name=task_name,
+#             security_code=security_code,
+#             security_name=security_name,
+#             summary=summary,
+#             detail_list=detail_list,
+#             report_year=report_year,
+#         )
+#     )
+#     print(insert_ok)
+#     query = SummrayTaskResults.build_query(security_code=security_code)
+#     count, documents = loop.run_until_complete(SummrayTaskResults.list_docs(client, query))
+#     print(count)
+#     for document in documents:
+#         id_str = str(document["_id"])
+#         print(document)

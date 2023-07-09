@@ -28,6 +28,7 @@ class Databases(Enum):
 class Tables(Enum):
     DOCUMENTS_TABLE = "docs"
     TASK_RESULTS_TABLE = "task_results"
+    SUMMARY_RESULTS_TALBE = "summary_results"
 
 
 DOC_TYPES = [

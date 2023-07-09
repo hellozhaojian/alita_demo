@@ -8,6 +8,7 @@ from alita_mini.adapter.mongo_client import MongoClient
 from alita_mini.data.service.common_data_access_service import CommonDataAccessService
 from alita_mini.llm.openai_utils import get_completion_from_messages as llm_func
 from alita_mini.llm.openai_utils import set_open_ai
+from alita_mini.reasoner.domain.task_result_base import build_task_results_db
 
 
 # load all prompts Done
@@ -67,6 +68,7 @@ if __name__ == "__main__":
     config = ReasonerConfig.load(config_file)
     MongoClient.instance().build(config)
     PromptFactory.instance().scan_prompts()
+    build_task_results_db()
     set_open_ai(config.open_ai_key)
     simple_reasoner = SimpleReasoner(config)
     simple_reasoner.reason_process()

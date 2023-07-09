@@ -1,3 +1,4 @@
+import logging
 from alita_mini.reasoner.domain.prompt_base import PromptsBase
 from alita_mini.data.domain.document import Document
 from alita_mini.reasoner.domain.results.summary_task_results import SummrayTaskResults
@@ -8,6 +9,7 @@ import traceback
 import jinja2
 from alita_mini.llm.openai_utils import count_string_tokens, get_completion_from_messages
 from langchain.text_splitter import CharacterTextSplitter
+from alita_mini.adapter.mongo_client import MongoClient
 
 
 class SummaryThenMergePrompt(PromptsBase):
@@ -16,7 +18,7 @@ class SummaryThenMergePrompt(PromptsBase):
             return []
 
         result = {
-            "doc_id": input_data.doc_id,
+            "doc_id": str(input_data.doc_id),
             "task_type": self.task_type,
             "task_name": self.task_name,
             "doc_sub_type": input_data.doc_sub_type,
@@ -25,23 +27,47 @@ class SummaryThenMergePrompt(PromptsBase):
             "security_name": input_data.security_name,
             "report_year": input_data.report_year,
         }
-        if input_data is not None:
-            print(input_data.security_code + "---------reason -------")
-            print(result)
-        print("I am Here")
+
+        # if input_data is not None:
+        #     print(input_data.security_code + "---------reason -------")
+        #     print(result)
+        client = MongoClient.instance().client
+        result["client"] = client
+        loop = client.get_io_loop()
+        # print("I am Here")
+        query = SummrayTaskResults.build_query(
+            security_code=input_data.security_code,
+            task_type=self.task_type,
+            task_name=self.task_name,
+            report_year=input_data.report_year,
+        )
+        count, _ = loop.run_until_complete(SummrayTaskResults.list_docs(client, query))
+        if count > 0:
+            logging.warn(f"doc_id {result['doc_id']}  on {result['task_type']} {result['task_name']} already in db ")
+            return False
         content = input_data.content
         # get summarize Template
         detail_list = self.sum(content)
-        for item in detail_list:
-            print(item)
+        if len(detail_list) == 0:
+            return False
+        # for item in detail_list:
+        #     print(item)
         # reason
-        summray = self.merge(detail_list=detail_list)
-        print(summray)
-        return None
+        summary = self.merge(detail_list=detail_list)
+        result["summary"] = summary
+        result["detail_list"] = detail_list
+
+        insert_ok = loop.run_until_complete(SummrayTaskResults.insert(**result))
+        if insert_ok:
+            logging.info(f"process doc_id {result['doc_id']}  on {result['task_type']} {result['task_name']} done ")
+        else:
+            logging.info(f"process doc_id {result['doc_id']}  on {result['task_type']} {result['task_name']} wrong ")
+        return insert_ok
 
     def merge(self, detail_list: List[str]):
         template_str = self.prompt_template_dict.get("merge_prompts.txt", None)
         if template_str is None or template_str == "":
+            logging.warn("no prompts file for merge summary")
             return ""
         environment = jinja2.Environment()
         template = environment.from_string(template_str)
@@ -54,6 +80,7 @@ class SummaryThenMergePrompt(PromptsBase):
         sum_details = []
         template_str = self.prompt_template_dict.get("summary_prompts.txt", None)
         if template_str is None or template_str == "":
+            logging.warn("no prompts file for summary")
             return sum_details
         environment = jinja2.Environment()
         template = environment.from_string(template_str)

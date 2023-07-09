@@ -171,7 +171,6 @@ class Document(BaseModel):
     async def find_detail(cls, client: AsyncIOMotorClient, doc_id):
         db = client[Databases.DB.value]
         collection = db[Tables.DOCUMENTS_TABLE.value]
-        print("fuck here")
         document = await collection.find_one({"_id": ObjectId(doc_id)})  # 查询指定_id的文档
         return document
 
