@@ -1,5 +1,5 @@
 input_data_config:
-  security_code_list: [300308]
+  security_code_list: [300308, 603288]
 task_config:
   prompts_path_list:
     [
@@ -14,4 +14,4 @@ mongo_config:
   password: OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh
   user: root
   port: 27007
-open_ai_key: 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
+open_ai_key: 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

@@ -11,6 +11,16 @@ class DataLoadingConfig(BaseModel):
     data_file: str
     # for indexer
     dump_file: str
+    # index file
+    index_file: str
+    # index meta file
+    index_meta_file: str
+    # index meta filed
+    index_meta_fileds = ["_id"]
+    index_language = "zh"
+    rocket_model = ""
+    use_cuda = False
+    batch_size = 32
     mongo_config: MongoConfig
 
     # Add more config for indexer config

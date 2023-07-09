@@ -201,6 +201,8 @@ class Document(BaseModel):
                 "_id": str(document["_id"]),
                 "title": "{}({}):{}".format(document["security_name"], document["security_code"], document["title"]),
                 "content": document["content"],
+                "security_name": document["security_name"],
+                "security_code": document["security_code"],
             }
             writer.write(json.dumps(data, ensure_ascii=False) + "\n")
         writer.close()
