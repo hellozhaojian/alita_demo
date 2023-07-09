@@ -18,7 +18,7 @@ class DataLoadingConfig(BaseModel):
     # index meta filed
     index_meta_fileds = ["_id"]
     index_language = "zh"
-    rocket_model = ""
+    rocket_model = "zh_dureader_de_v2"
     use_cuda = False
     batch_size = 32
     mongo_config: MongoConfig

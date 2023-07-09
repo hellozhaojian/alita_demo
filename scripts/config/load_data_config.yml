@@ -1,6 +1,8 @@
 meta_file: /Users/alchemy_taotaox/data/alita/report_meta_info.txt
 data_file: /Users/alchemy_taotaox/data/alita/output.txt
-dump_file: /Users/alchemy_taotaox/data/alita/dump_index.txt
+dump_file: /Users/alchemy_taotaox/data/alita/dump_index.txt.10
+index_file: /Users/alchemy_taotaox/data/alita/index.bin
+index_meta_file: /Users/alchemy_taotaox/data/alita/index.meta.txt
 mongo_config:
   host: 127.0.0.1
   password: OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh

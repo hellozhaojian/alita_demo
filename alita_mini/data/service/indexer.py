@@ -10,7 +10,6 @@ import rocketqa
 import logging
 import json
 from tqdm import tqdm
-from utils import process_file_with_tqdm, gen_uuid
 from langchain.text_splitter import CharacterTextSplitter
 from alita_mini.data.data_utils import FaissTool
 
@@ -25,7 +24,7 @@ class IndexerService(object):
         # we try to index title and content
         self.encoder_conf = {
             "model": self.config.rocket_model,
-            "use_cuda": self.config.use_code,
+            "use_cuda": self.config.use_cuda,
             "device_id": 0,
             "batch_size": self.config.batch_size,
         }
@@ -107,7 +106,7 @@ class IndexerService(object):
 
     def search(self, query, top_k=5):
         # encode query
-        q_embs = self._dual_encoder.encode_query(query=[query])
+        q_embs = self.dual_encoder.encode_query(query=[query])
         q_embs = np.array(list(q_embs))
         # search with faiss
         search_result = self.faiss_tool.search(q_embs, top_k)

@@ -30,6 +30,8 @@ uvicorn = "^0.22.0"
 redis = "^4.6.0"
 pymongo = "^4.4.0"
 faiss-cpu = "^1.7.4"
+paddlepaddle = "2.4.2"
+rocketqa = "^1.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
