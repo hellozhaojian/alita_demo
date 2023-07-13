@@ -120,7 +120,7 @@ class SummrayTaskResults(BaseTaskResult):
     ):
         query = {}
         if report_year is not None and report_year != "":
-            query["report_year"] = report_year
+            query["report_year"] = str(report_year)
         if security_code is not None and security_code != "":
             query["security_code"] = security_code
         if security_name is not None and security_name != "":

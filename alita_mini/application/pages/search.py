@@ -14,17 +14,17 @@ st.markdown(
 )
 
 
-@st.cache_data
+@st.cache_resource
 def get_search_service():
-    # root_dir = Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-    # # init config
-    # config_file = root_dir / "scripts" / "config" / args.config
+    root_dir = Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+    # init config
+    config_file = root_dir / "scripts" / "config" / "load_data_config.yml"
 
-    # config = DataLoadingConfig.load(config_file)
-    # index_service = IndexerService(config)
-    # index_service.load_index()
-    # return index_service
-    return None
+    config = DataLoadingConfig.load(config_file)
+    index_service = IndexerService(config)
+    index_service.load_index()
+    return index_service
+    # return None
 
 
 index_service = get_search_service()
@@ -81,11 +81,12 @@ if search_button:
     # 调用搜索引擎的方法来执行搜索
     # results = search_engine.search(query, topk)
     #         # items = results = index_service.search(args.query)
-    # results = index_service.search(query, int(topk))
+    results = index_service.search(query, int(topk))
+    # return results
     # for item in items:
     #     print(item)
     # 替换以下示例结果为实际结果
-    results = [
+    results_bk = [
         {
             "title": "年报1",
             "security_code": "001",
@@ -118,6 +119,11 @@ if search_button:
     for i, result in enumerate(results):
         # 在content中逐个词标记为红色
         content = result["content"]
+        # Replace '<' with '&lt;'
+        content = content.replace("<", "&lt;")
+
+        # Replace '>' with '&gt;'
+        content = content.replace(">", "&gt;")
         for token in query_tokens:
             content = content.replace(token, f"<font color='red'>{token}</font>")
         result["highlights"] = content
