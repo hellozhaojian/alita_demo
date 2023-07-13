@@ -192,7 +192,7 @@ class Document(BaseModel):
         db = client[Databases.DB.value]
         collection = db[Tables.DOCUMENTS_TABLE.value]
         # 指定要导出的字段
-        fields = ["_id", "title", "content", "security_code", "security_name"]
+        fields = ["_id", "title", "content", "security_code", "security_name", "report_year", "url"]
 
         writer = open(output_file, "w")
         # 查询并逐行写入文档数据
@@ -203,6 +203,8 @@ class Document(BaseModel):
                 "content": document["content"],
                 "security_name": document["security_name"],
                 "security_code": document["security_code"],
+                "report_year": document["report_year"],
+                "url": document["url"],
             }
             writer.write(json.dumps(data, ensure_ascii=False) + "\n")
         writer.close()

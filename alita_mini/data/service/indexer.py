@@ -80,6 +80,8 @@ class IndexerService(object):
                     tmp_meta["global_index"] = global_index
                     tmp_meta["security_code"] = data["security_code"]
                     tmp_meta["security_name"] = data["security_name"]
+                    tmp_meta["report_year"] = data["report_year"]
+                    tmp_meta["url"] = data["url"]
                     tmp_meta["content"] = para_item
                     tmp_meta_list.append(json.dumps(tmp_meta, ensure_ascii=False))
                     index += 1
@@ -129,6 +131,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-k", "--command", default="build", help="command: [build|query]")
     parser.add_argument("-q", "--query", default="800g 光模块", help="concrete qeury")
+    parser.add_argument("-n", "--num", default="20", help="number of results")
 
     args = parser.parse_args()
     root_dir = Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
@@ -141,6 +144,7 @@ if __name__ == "__main__":
         index_service.build_index()
     elif args.command == "query":
         index_service.load_index()
-        items = results = index_service.search(args.query)
+        # items = results = index_service.search(args.query)
+        items = index_service.search(args.query, int(args.num))
         for item in items:
             print(item)

@@ -22,6 +22,6 @@ echo "PYTHONPATH=${basepath}/../  && nohup ${bin}  ${py_file} -k build -c ${conf
 export PYTHONPATH=${basepath}/../  &&  ${bin}  ${py_file} -k build -c ${config_file}  
 
 # #query
-# py_file=${basepath}/../alita_mini/data/service/indexer.py
-# echo "PYTHONPATH=${basepath}/../  && nohup ${bin}  ${py_file} -k query -q '筷子 砧板'-c ${config_file}  > query_index.log 2>&1 &"
-# export PYTHONPATH=${basepath}/../  &&  ${bin}  ${py_file} -k query -q '筷子 砧板' -c ${config_file}  
+#py_file=${basepath}/../alita_mini/data/service/indexer.py
+#echo "PYTHONPATH=${basepath}/../  && nohup ${bin}  ${py_file} -k query -q '筷子 砧板'-c ${config_file}  > query_index.log 2>&1 &"
+#export PYTHONPATH=${basepath}/../  &&  ${bin}  ${py_file} -k query -q '筷子 砧板' -c ${config_file}  

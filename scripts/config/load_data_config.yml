@@ -1,5 +1,5 @@
 meta_file: /Users/alchemy_taotaox/data/alita/report_meta_info.txt
-data_file: /Users/alchemy_taotaox/data/alita/output.txt
+data_file: /Users/alchemy_taotaox/data/alita/output.txt.no.table.new
 dump_file: /Users/alchemy_taotaox/data/alita/dump_index.txt.10
 index_file: /Users/alchemy_taotaox/data/alita/index.bin
 index_meta_file: /Users/alchemy_taotaox/data/alita/index.meta.txt
