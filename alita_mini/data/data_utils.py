@@ -44,3 +44,14 @@ def process_file_with_tqdm(
             line_result = map_func(line.strip(), **map_kwargs)
             reduce_func(line_result, **reduce_kwargs)
     return reduce_func(None, **reduce_kwargs)
+
+
+class DictionarySearcher:
+    def __init__(self):
+        self.words_map = {}
+
+    def add_word(self):
+        pass
+
+    def search(self, query):
+        pass

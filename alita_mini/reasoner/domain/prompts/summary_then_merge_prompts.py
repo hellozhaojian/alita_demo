@@ -16,7 +16,7 @@ class SummaryThenMergePrompt(PromptsBase):
     def reason(self, input_data: Document = None, llm_func: Callable = None) -> List[SummrayTaskResults]:
         if input_data is None:
             return []
-
+        # TODO , 只针对ContentType = 管理层分析的进行执行
         result = {
             "doc_id": str(input_data.doc_id),
             "task_type": self.task_type,
@@ -40,6 +40,7 @@ class SummaryThenMergePrompt(PromptsBase):
             task_type=self.task_type,
             task_name=self.task_name,
             report_year=input_data.report_year,
+            doc_sub_type=input_data.doc_sub_type,
         )
         count, _ = loop.run_until_complete(SummrayTaskResults.list_docs(client, query))
         if count > 0:

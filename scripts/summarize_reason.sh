@@ -10,4 +10,4 @@ echo ${bin}
 echo ${py_file}
 
 echo "PYTHONPATH=${basepath}/../  && nohup ${bin}  ${py_file} -c ${config_file}  > sum_reason.log 2>&1 &"
-export PYTHONPATH=${basepath}/../  && nohup ${bin}  ${py_file} -c ${config_file}  > sum_reason.log 2>&1 &
+export PYTHONPATH=${basepath}/../  && ${bin}  ${py_file} -c ${config_file}  

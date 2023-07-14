@@ -149,7 +149,7 @@ class SummrayTaskResults(BaseTaskResult):
 
         # 查询符合条件的文档数量
         total_count = await collection.count_documents(query)
-        if skip_count == 0:
+        if skip_count > 0:
             cursor = collection.find(query).sort("report_date", pymongo.DESCENDING).skip(skip_count).limit(limit_count)
         else:
             cursor = collection.find(query).sort("report_date", pymongo.DESCENDING).limit(limit_count)

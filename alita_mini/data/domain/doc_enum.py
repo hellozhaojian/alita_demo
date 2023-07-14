@@ -17,6 +17,10 @@ class DocSubType(Enum):
     Half_Yearly_Report = "半年报"
 
 
+class ContentType(Enum):
+    Manager_Ana = "管理层分析"
+
+
 class MarketType(Enum):
     A_STOCK_MARKET = "A股"
 

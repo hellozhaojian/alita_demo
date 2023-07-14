@@ -13,7 +13,7 @@ import streamlit.components.v1 as components
 # from alita_mini.application.templates import search_result
 st.markdown(
     """
-   在年报或者中报中搜索管理层的分析内容
+   对年报进行总结
 """
 )
 
@@ -46,7 +46,7 @@ def search_result(i: int, summary_result: SummrayTaskResults) -> str:
     <br/>
     <div style="font-size: 120%;">
     {i + 1}.
-        {summary_result.security_name} - {summary_result.security_code} - {summary_result.task_type}
+        {summary_result.security_name} - {summary_result.security_code} - {summary_result.task_type} - {summary_result.doc_sub_type}
 </div>
 <div style="font-size: 95%;">
     <div style="color: grey; font-size: 95%;">
@@ -62,263 +62,43 @@ def search_result(i: int, summary_result: SummrayTaskResults) -> str:
 </div>"""
 
 
-import streamlit as st
+# def render_hide_show_elements_old(elements):
+#     html_code = """
+#         <style>
+#         .container {
+#             display: none;
+#             width: 100%;
+#             color: black;
+#             padding: 20px;
+#             margin: 10px;
+#             background-color: white;
+#             overflow-y: scroll;  /* 在这里添加滚动属性 */
+#             max-height: 500px;  /* 设定一个固定的最大高度 */
+#         }
+#         .trigger {
+#             width: 100%;
+#             height: 10px;
+#             background-color: transparent;
+#         }
+#         .trigger:hover {
+#             height: auto;
+#         }
+#         .trigger:hover .container {
+#             display: block;
+#         }
+#         </style>
+#         <div class="trigger">
+#             <div class="container">
+#     """
 
+#     for element in elements:
+#         html_code += f"<p>{element}</p>"
 
-def render_hide_show_elements_pre(elements):
-    html_code = """
-        <style>
-        .container {
-            display: none;
-            width: 100%;
-            color: black;
-            padding: 20px;
-            margin: 10px;
-            background-color: white;  /* 背景色设置为白色以确保内容可见 */
-            overflow: auto;  /* 添加这行代码 */
-
-        }
-        .trigger {
-            width: 100%;
-            height: 10px;  /* 当内容不显示时，触发器占据的空间很小 */
-            background-color: transparent;
-        }
-        .trigger:hover {
-            /*height: 200px;  当内容显示时，触发器占据足够大的空间 */
-            height: auto;  /* 修改这行代码 */
-        }
-        .trigger:hover .container {
-            display: block;
-        }
-        </style>
-        <div class="trigger">
-            <div class="container">
-    """
-
-    for i, element in enumerate(elements):
-        html_code += f"""
-            {element}
-        """
-
-    html_code += """
-           
-        </div>
-    """
-
-    st.markdown(html_code, unsafe_allow_html=True)
-
-
-def render_hide_show_elementsx(elements):
-    html_code = """
-        <style>
-        .container {
-            display: none;
-            width: 100%;
-            color: black;
-            padding: 20px;
-            margin: 10px;
-            background-color: white;
-            overflow: auto;  /* 添加这行代码 */
-        }
-        .trigger {
-            width: 100%;
-            height: 10px;
-            background-color: transparent;
-        }
-        .trigger:hover {
-            height: auto;  /* 修改这行代码 */
-        }
-        .trigger:hover .container {
-            display: block;
-        }
-        </style>
-        <div class="trigger">
-            <div class="container">
-    """
-
-    for element in elements:
-        html_code += f"<p>{element}</p>"
-
-    html_code += """
-        </div>
-    </div>
-    """
-
-    st.markdown(html_code, unsafe_allow_html=True)
-
-
-def render_hide_show_elements_fuck(elements):
-    html_code = """
-        <style>
-        .container {
-            display: none;
-            width: 100%;
-            color: black;
-            padding: 20px;
-            margin: 10px;
-            background-color: white;
-            overflow-y: scroll;  /* 添加这行代码 overflow: auto;*/
-            max-height: 500px;  /* 添加这行代码 */
-        }
-        .trigger {
-            width: 100%;
-            height: 10px;
-            background-color: transparent;
-        }
-        .trigger:hover {
-            height: auto;
-        }
-        .trigger:hover .container {
-            display: block;
-        }
-        </style>
-        <div class="trigger">
-            <div class="container">
-                            <div class="content">
-
-    """
-
-    for element in elements:
-        html_code += f"<p>{element}</p>"
-
-    html_code += """
-        </div>
-        </div>
-    </div>
-    """
-    components.html(html_code)
-
-    # st.markdown(html_code, unsafe_allow_html=True)
-
-
-def render_hide_show_elements_x(elements):
-    html_code = """
-        <style>
-        .container {
-            display: none;
-            width: 100%;
-            color: black;
-            padding: 0;  /* 修改这里 */
-            margin: 0;  /* 修改这里 */
-            background-color: white;
-            overflow: auto;
-        }
-        .trigger {
-            width: 100%;
-            height: 0;  /* 修改这里 */
-            background-color: transparent;
-        }
-        .trigger:hover {
-            height: auto;
-        }
-        .trigger:hover .container {
-            display: block;
-            padding: 20px;  /* 添加这里 */
-            margin: 10px;  /* 添加这里 */
-        }
-        </style>
-        <div class="trigger">
-            <div class="container">
-    """
-
-    for element in elements:
-        html_code += f"<p>{element}</p><p/><br/><p/>"
-
-    html_code += """
-        </div>
-    </div>
-    """
-
-    components.html(html_code)
-
-
-def render_hide_show_elements_fuck2(elements):
-    html_code = """
-        <style>
-        .container {
-            display: none;
-            width: 100%;
-            color: black;
-            padding: 20px;
-            margin: 10px;
-            background-color: white;
-        }
-        .content {
-            overflow-y: scroll;  /* 将这行代码从 .container 移动到 .content */
-            max-height: 500px;  /* 将这行代码从 .container 移动到 .content */
-        }
-        .trigger {
-            width: 100%;
-            height: 10px;
-            background-color: transparent;
-        }
-        .trigger:hover {
-            height: auto;
-        }
-        .trigger:hover .container {
-            display: block;
-        }
-        </style>
-        <div class="trigger">
-            <div class="container">
-                <div class="content">
-    """
-
-    for element in elements:
-        html_code += f"<p>{element}</p>"
-
-    html_code += """
-                </div>
-            </div>
-        </div>
-    """
-
-    components.html(html_code)
-
-
-def render_hide_show_elements_wrong(elements):
-    html_code = """
-        <style>
-        .container {
-            display: none;
-            width: 100%;
-            color: black;
-            padding: 20px;
-            margin: 10px;
-            background-color: white;
-            max-height: 500px;  /* 这个需要移到这里 */
-        }
-        .content {
-            overflow-y: scroll;  /* 这个需要移到这里 */
-            height: 100%;
-        }
-        .trigger {
-            width: 100%;
-            height: 10px;
-            background-color: transparent;
-        }
-        .trigger:hover {
-            height: auto;
-        }
-        .trigger:hover .container {
-            display: block;
-        }
-        </style>
-        <div class="trigger">
-            <div class="container">
-                <div class="content">
-    """
-
-    for element in elements:
-        html_code += f"<p>{element}</p>"
-
-    html_code += """
-                </div>
-            </div>
-        </div>
-    """
-
-    components.html(html_code)
+#     html_code += """
+#             </div>
+#         </div>
+#     """
+#     components.html(html_code)
 
 
 def render_hide_show_elements(elements):
@@ -326,21 +106,20 @@ def render_hide_show_elements(elements):
         <style>
         .container {
             display: none;
-            width: 100%;
+            width: calc(100% - 40px);  /* 减去左右两侧的 padding ， 之前的是 width: 100%;*/
             color: black;
             padding: 20px;
             margin: 10px;
             background-color: white;
-            overflow-y: scroll;  /* 在这里添加滚动属性 */
-            max-height: 500px;  /* 设定一个固定的最大高度 */
+            overflow-y: auto;  /* 更改为 auto，仅在需要时显示滚动条 */
+            max-height: 90vh;  /* 更改为视口高度的90%，以便在内容多时可以滚动 */
+            border: 1px solid black;  /* 添加边框 */
         }
         .trigger {
             width: 100%;
-            height: 10px;
+            min-height: 10px;  /* 添加最小高度，确保触发区始终可见 */
             background-color: transparent;
-        }
-        .trigger:hover {
-            height: auto;
+            height: auto;  /* 更改为auto，以适应内容的高度 */
         }
         .trigger:hover .container {
             display: block;
@@ -357,7 +136,6 @@ def render_hide_show_elements(elements):
             </div>
         </div>
     """
-
     components.html(html_code)
 
 
@@ -365,14 +143,15 @@ if __name__ == "__main__":
     task_type = st.sidebar.selectbox("Task Type", ["summary"])
 
     # Set report_year variable
-    report_year = st.sidebar.selectbox("Report Year", ["2019", "2020", "2021", "2022", "2023"])
+    report_year = st.sidebar.selectbox("Report Year", ["2023", "2022", "2021", "2020", "2019"])
+    doc_sub_type = st.sidebar.selectbox("报告类型", ["年报", "半年报"])
 
     # Set page_size variable
     page_size = st.sidebar.selectbox("Page Size", [10, 20, 30, 50])
 
     # Set page_number variable (dynamically filled dropdown)
     # Replace the options list with your desired logic to populate the dropdown
-    options = [1, 2, 3, 4, 5]  # Example options list
+    options = list(range(1, 21))  # Example options list
     page_number = st.sidebar.selectbox("Page Number", options)
 
     # Display the selected variables
@@ -397,8 +176,9 @@ if __name__ == "__main__":
             report_year=report_year,
             page_size=page_size,
             page_number=page_number,
+            doc_sub_type=doc_sub_type,
         )
-        st.write(f"搜索到 {count} 条结果")
+        st.write(f"搜索到 {count} 条结果， 共{(count+1)//page_size + 1}页, 每页{page_size}个结果, 现在在第{page_number} 页")
         for i, item in enumerate(results):
             print(item)
             st.write(search_result(i, item), unsafe_allow_html=True)

@@ -36,7 +36,7 @@ class SimpleReasoner(object):
                 market_name=self.config.input_data_config.market_name,
                 report_year=self.config.input_data_config.report_year,
             ):
-                # print(doc)
+                print(doc)
                 for prompt_obj in self.prompt_objs:
                     # @abstractmethod
                     # def reason(self, input_data: Document, llm_func: Callable) -> List[BaseTaskResult]:

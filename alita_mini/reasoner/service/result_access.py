@@ -62,14 +62,13 @@ class CommonDataAccessService(object):
         security_code: str = "300308",
         task_type: str = TaskType.SUMMARY_TYPE.value,
         report_year: str = "2023",
+        doc_sub_type: str = "年报",
         page_size=20,
         page_number=0,
     ) -> List[SummrayTaskResults]:
         loop = self.client.get_io_loop()
         query = SummrayTaskResults.build_query(
-            security_code=security_code,
-            task_type=task_type,
-            report_year=report_year,
+            security_code=security_code, task_type=task_type, report_year=report_year, doc_sub_type=doc_sub_type
         )
         print(query)
         # TODO, do pagination

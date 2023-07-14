@@ -6,7 +6,15 @@ from pydantic import BaseModel, Field, validator
 from motor.motor_asyncio import AsyncIOMotorClient
 import pymongo
 import datetime
-from alita_mini.data.domain.doc_enum import DOC_TYPES, MarketType, DocMainType, DocSubType, Databases, Tables
+from alita_mini.data.domain.doc_enum import (
+    DOC_TYPES,
+    MarketType,
+    DocMainType,
+    DocSubType,
+    Databases,
+    Tables,
+    ContentType,
+)
 from alita_mini.custom_types import PyObjectId
 
 
@@ -14,6 +22,7 @@ class Document(BaseModel):
     doc_id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     doc_type: str
     doc_sub_type: str
+    content_type: str = ContentType.Manager_Ana.value
     market_name: MarketType = Field(..., description="Field with values from MyEnum")
     security_code: str
     security_name: str
@@ -42,6 +51,7 @@ class Document(BaseModel):
             "example": {
                 "doc_type": "report",
                 "doc_sub_type": "year_report",
+                "content_type": ContentType.Manager_Ana.value,
                 "market_name": MarketType.A_STOCK_MARKET.value,
                 "security_code": "300033",
                 "security_name": "同花顺",
@@ -86,6 +96,7 @@ class Document(BaseModel):
         doc_type=DocMainType.REPORT.value,
         doc_sub_type=DocSubType.Annual_Report.value,
         market_name=MarketType.A_STOCK_MARKET.value,
+        content_type=ContentType.Manager_Ana.value,
     ):
         report_year = report_date.split("-")[0]
         db = client[Databases.DB.value]
@@ -101,6 +112,7 @@ class Document(BaseModel):
             "doc_sub_type": doc_sub_type,
             "market_name": market_name,
             "report_year": report_year,
+            "content_type": content_type,
         }
         try:
             result = await collection.insert_one(doc_item_json)
@@ -122,6 +134,7 @@ class Document(BaseModel):
         doc_type=None,
         doc_sub_type=None,
         market_name=None,
+        content_type=None,
     ):
         query = {}
         if report_year is not None and report_year != "":
@@ -136,6 +149,8 @@ class Document(BaseModel):
             query["doc_sub_type"] = doc_sub_type
         if market_name is not None and market_name != "":
             query["market_name"] = market_name
+        if content_type is not None and content_type != "":
+            query["content_type"] = content_type
         return query
 
     @classmethod
@@ -188,11 +203,24 @@ class Document(BaseModel):
         await Document.build_index(client=client)
 
     @classmethod
-    async def export_collection_to_jsonl(cls, client: AsyncIOMotorClient, output_file):
+    async def export_collection_to_jsonl(cls, client: AsyncIOMotorClient, output_file, need_index=False):
         db = client[Databases.DB.value]
         collection = db[Tables.DOCUMENTS_TABLE.value]
         # 指定要导出的字段
-        fields = ["_id", "title", "content", "security_code", "security_name", "report_year", "url"]
+        fields = [
+            "_id",
+            "title",
+            # "content",
+            "security_code",
+            "security_name",
+            "report_year",
+            "url",
+            "doc_type",
+            "doc_sub_type",
+            "content_type",
+        ]
+        if need_index:
+            fields.append("content")
 
         writer = open(output_file, "w")
         # 查询并逐行写入文档数据
@@ -200,12 +228,17 @@ class Document(BaseModel):
             data = {
                 "_id": str(document["_id"]),
                 "title": "{}({}):{}".format(document["security_name"], document["security_code"], document["title"]),
-                "content": document["content"],
+                # "content": document["content"],
                 "security_name": document["security_name"],
                 "security_code": document["security_code"],
                 "report_year": document["report_year"],
                 "url": document["url"],
+                "doc_type": document["doc_type"],
+                "doc_sub_type": document["doc_sub_type"],
+                "content_type": document.get("content_type", ContentType.Manager_Ana.value),
             }
+            if need_index:
+                data["content"] = document["content"]
             writer.write(json.dumps(data, ensure_ascii=False) + "\n")
         writer.close()
         return True

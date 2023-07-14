@@ -8,6 +8,7 @@ import json
 from urllib.parse import urljoin
 from alita_mini.adapter.mongo_client import MongoClient
 from alita_mini.data.domain.document import Document
+from alita_mini.data.domain.doc_enum import DocMainType, DocSubType, ContentType, MarketType
 
 
 class DocumentsOfflineService(object):
@@ -52,8 +53,14 @@ class DocumentsOfflineService(object):
             security_code = line_info["stock_code"]
             security_name = line_info["stock_name"]
             content = line_info["content"]
-            key = security_code + title + report_date
-            url = url_dict.get(key)
+            url = line_info.get("url", None)
+            if url is None:
+                key = security_code + title + report_date
+                url = url_dict.get(key)
+            doc_type = line_info.get("doc_type", DocMainType.REPORT.value)
+            doc_sub_type = line_info.get("doc_sub_type", DocSubType.Annual_Report.value)
+            market_name = line_info.get("market_name", MarketType.A_STOCK_MARKET.value)
+            content_type = line_info.get("content_type", ContentType.Manager_Ana.value)
 
             insert_ok = loop.run_until_complete(
                 Document.insert(
@@ -64,6 +71,10 @@ class DocumentsOfflineService(object):
                     security_name=security_name,
                     content=content,
                     url=url,
+                    doc_sub_type=doc_sub_type,
+                    doc_type=doc_type,
+                    content_type=content_type,
+                    market_name=market_name,
                 )
             )
             if insert_ok:
@@ -74,11 +85,13 @@ class DocumentsOfflineService(object):
         logging.info("load {} docs bad {} docs insert count {}".format(read_count, read_bad_count, insert_ok_count))
         logging.info("Done .... load data {} into {} ".format(self.config.data_file, self.config.mongo_uri))
 
-    def dump_data_for_index(self):
+    def dump_data_for_index(self, need_index=True):
         logging.info("begin .... dump {} into {} ".format(self.config.mongo_uri, self.config.dump_file))
         loop = self.client.get_io_loop()
         loop.run_until_complete(Document.build_db(self.client))
-        dump_ok = loop.run_until_complete(Document.export_collection_to_jsonl(self.client, self.config.dump_file))
+        dump_ok = loop.run_until_complete(
+            Document.export_collection_to_jsonl(self.client, self.config.dump_file, need_index=need_index)
+        )
         logging.info(
             "Done .... dump {} into {}  status {}".format(self.config.mongo_uri, self.config.dump_file, dump_ok)
         )
