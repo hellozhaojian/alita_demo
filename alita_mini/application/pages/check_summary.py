@@ -1,5 +1,4 @@
 import streamlit as st
-import jieba
 from markupsafe import Markup
 from pathlib import Path
 import os
@@ -9,6 +8,11 @@ from alita_mini.adapter.mongo_client import MongoClient
 from alita_mini.reasoner.service.result_access import CommonDataAccessService
 from alita_mini.reasoner.domain.results.summary_task_results import SummrayTaskResults
 import streamlit.components.v1 as components
+
+
+def app():
+    st.title("chaggpt摘要")
+
 
 # from alita_mini.application.templates import search_result
 st.markdown(
@@ -60,45 +64,6 @@ def search_result(i: int, summary_result: SummrayTaskResults) -> str:
     <div style="clear: both;"></div>
     {summary_result.summary}
 </div>"""
-
-
-# def render_hide_show_elements_old(elements):
-#     html_code = """
-#         <style>
-#         .container {
-#             display: none;
-#             width: 100%;
-#             color: black;
-#             padding: 20px;
-#             margin: 10px;
-#             background-color: white;
-#             overflow-y: scroll;  /* 在这里添加滚动属性 */
-#             max-height: 500px;  /* 设定一个固定的最大高度 */
-#         }
-#         .trigger {
-#             width: 100%;
-#             height: 10px;
-#             background-color: transparent;
-#         }
-#         .trigger:hover {
-#             height: auto;
-#         }
-#         .trigger:hover .container {
-#             display: block;
-#         }
-#         </style>
-#         <div class="trigger">
-#             <div class="container">
-#     """
-
-#     for element in elements:
-#         html_code += f"<p>{element}</p>"
-
-#     html_code += """
-#             </div>
-#         </div>
-#     """
-#     components.html(html_code)
 
 
 def render_hide_show_elements(elements):

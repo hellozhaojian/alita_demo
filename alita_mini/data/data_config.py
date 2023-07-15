@@ -1,7 +1,7 @@
 import logging
 from pydantic import BaseModel
 from alita_mini.utils import ordered_yaml_load
-from alita_mini.config import MongoConfig
+from alita_mini.config import MongoConfig, RedisConfig
 
 
 class DataLoadingConfig(BaseModel):
@@ -22,6 +22,7 @@ class DataLoadingConfig(BaseModel):
     use_cuda = False
     batch_size = 32
     mongo_config: MongoConfig
+    redis_config: RedisConfig = RedisConfig()
 
     # Add more config for indexer config
     @classmethod

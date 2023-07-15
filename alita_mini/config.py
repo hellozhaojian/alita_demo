@@ -3,6 +3,19 @@ from pydantic import BaseModel
 from alita_mini.utils import ordered_yaml_load
 
 
+class RedisConfig(BaseModel):
+    host: str = "127.0.0.1"
+    port: int = 6369
+    password: str = "myredispassword"
+    db: int = 0
+    expire_time: int = 60 * 60 * 24 * 30
+    latest_key: str = "LATEST_KEYS_FOR_CACHE"
+    max_history_size: str = 20
+
+    def __hash__(self):
+        return hash(f"{self.host}-{self.port}-{self.user_name}-{self.db}")
+
+
 class MongoConfig(BaseModel):
     user: str
     password: str

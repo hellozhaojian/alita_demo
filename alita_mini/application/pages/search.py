@@ -6,6 +6,11 @@ import os
 from alita_mini.data.data_config import DataLoadingConfig
 from alita_mini.data.service.indexer import IndexerService
 
+
+def app():
+    st.title("向量搜索")
+
+
 # from alita_mini.application.templates import search_result
 st.markdown(
     """
