@@ -11,7 +11,7 @@ from alita_mini.llm.openai_utils import set_open_ai, test_open_ai
 # for data loader
 class InputDataConfig(BaseModel):
     doc_type: str = DocMainType.REPORT.value
-    doc_sub_type: str = DocSubType.Half_Yearly_Report.value  # TODO 改成一个列表
+    doc_sub_type: str = DocSubType.Annual_Report.value  # TODO 改成一个列表
     market_name: str = MarketType.A_STOCK_MARKET.value
     security_code_list: List[str]
     report_year: str = "2023"
