@@ -77,6 +77,7 @@ class TrainingDataExteactor:
         whole_content = whole_content.replace("\n", "")
         whole_content = full_to_half(whole_content)
         result_list = self.simple_split(whole_content)
+        simple_pdf.close()
         return result_list
 
 
