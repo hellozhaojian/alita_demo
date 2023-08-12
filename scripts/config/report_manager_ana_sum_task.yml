@@ -1,5 +1,43 @@
 input_data_config:
-  security_code_list: [600487, 002429, 603298, 002129, 300308, 603688]
+  security_code_list:
+    [
+      600487,
+      002429,
+      603298,
+      002129,
+      300308,
+      603688,
+      600338,
+      600531,
+      002114,
+      000060,
+      002259,
+      600497,
+      000573,
+      00060,
+      002114,
+      603132,
+      601168,
+      601212,
+      000758,
+      600338,
+      000426,
+      601020,
+      000688,
+      000878,
+      000833,
+      600362,
+      301217,
+      000737,
+      002895,
+      600096,
+      600141,
+      600078,
+      688398,
+      688102,
+      688122,
+      600363,
+    ]
 task_config:
   prompts_path_list:
     [
@@ -14,4 +52,4 @@ mongo_config:
   password: OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh
   user: root
   port: 27007
-open_ai_key: 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
+open_ai_key: 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

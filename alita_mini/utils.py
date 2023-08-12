@@ -134,15 +134,12 @@ def rate_limited(max_calls=3, period=60):
     def decorator(func):
         def wrapper(*args, **kwargs):
             now = time.time()
-            # print(f"now: {now} previous is {calls}")
             calls_in_period = [call for call in calls if now - call < period]
             # print(f"..... collection: {calls_in_period}")
             if len(calls_in_period) >= max_calls:
                 # 达到调用频率限制，暂时休眠 0.5 is trick, 屏蔽误差
                 time_to_wait = period + 0.5 - (now - calls_in_period[0])
                 logging.info(f"调用频率过高，休眠 {time_to_wait:.2f} 秒后重试... {now} --- {calls_in_period}")
-                # print(f"调用频率过高，休眠 {time_to_wait:.2f} 秒后重试...")
-                # print(f"调用频率过高，休眠 {time_to_wait:.2f} 秒后重试... {now} --- {calls_in_period}, len calls {len(calls)}")
 
                 time.sleep(time_to_wait)
             now = time.time()

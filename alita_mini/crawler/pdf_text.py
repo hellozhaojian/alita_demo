@@ -48,7 +48,12 @@ class SimplePdfTextParser(BasePdfTextParser):
         self.head = None
 
     def close(self):
+        for page_index in range(self.get_page_count()):
+            self.pdf.pages[page_index] = None
         self.pdf.close()
+        import gc
+
+        gc.collect()
 
     @lru_cache(maxsize=None)
     def get_foot_header(self, check_pages_num=20, threshold=0.9):

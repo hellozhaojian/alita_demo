@@ -9,6 +9,7 @@ from alita_mini.data.service.common_data_access_service import CommonDataAccessS
 from alita_mini.llm.openai_utils import get_completion_from_messages as llm_func
 from alita_mini.llm.openai_utils import set_open_ai
 from alita_mini.reasoner.domain.task_result_base import build_task_results_db
+import openai
 
 
 # load all prompts Done
@@ -64,7 +65,11 @@ if __name__ == "__main__":
     root_dir = Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
     # init config
     config_file = root_dir / "scripts" / "config" / args.config
-
+    proxies = {
+        "http": "http://127.0.0.1:1087",
+        "https": "http://127.0.0.1:1087",
+    }
+    openai.proxy = proxies
     config = ReasonerConfig.load(config_file)
     MongoClient.instance().build(config)
     PromptFactory.instance().scan_prompts()
